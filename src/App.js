@@ -13,6 +13,7 @@ class App extends Component {
     this.state = {
       vehiclesToDisplay: [],
       buyersToDisplay: [],
+      baseUrl: 'https://joes-autos.herokuapp.com/api',
     }
 
     this.getVehicles = this.getVehicles.bind(this)
