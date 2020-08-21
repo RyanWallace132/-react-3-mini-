@@ -5,6 +5,7 @@ import './App.css'
 
 // Toast notification dependencies
 import { ToastContainer, toast } from 'react-toastify'
+const baseUrl = 'https://joes-autos.herokuapp.com/api'
 
 class App extends Component {
   constructor(props) {
@@ -13,7 +14,6 @@ class App extends Component {
     this.state = {
       vehiclesToDisplay: [],
       buyersToDisplay: [],
-      baseUrl: 'https://joes-autos.herokuapp.com/api',
     }
 
     this.getVehicles = this.getVehicles.bind(this)
@@ -29,7 +29,16 @@ class App extends Component {
     this.deleteBuyer = this.deleteBuyer.bind(this)
   }
 
+
   getVehicles() {
+    axios.get(`${baseUrl}/vehicles`).then((res) => {
+      this.setState({
+        vehiclesToDisplay: res.data,
+      })
+      toast.success('Got the vehicles')
+    }).catch(err => {
+      toast.error(err)
+    })
     // axios (GET)
     // setState with response -> vehiclesToDisplay
   }
@@ -40,6 +49,14 @@ class App extends Component {
   }
 
   sellCar(id) {
+    axios.delete(`${baseUrl}/vehicles/${id}`).then(res => {
+      this.setState({
+        vehiclesToDisplay: res.data.vehicles
+      })
+      toast.success("It's gone!")
+    }).catch(err => {
+      toast.error(err.message)
+    })
     // axios (DELETE)
     // setState with response -> vehiclesToDisplay
   }
@@ -59,6 +76,14 @@ class App extends Component {
   }
 
   updatePrice(priceChange, id) {
+    axios.put(`${baseUrl}/vehicles/${id}/${priceChange}`).then((res) => {
+      this.setState({
+        vehiclesToDisplay: res.data.vehicles,
+      })
+      toast.success('Price changed')
+    }).catch(err => {
+      toast.error(err.message)
+    })
     // axios (PUT)
     // setState with response -> vehiclesToDisplay
   }
@@ -71,6 +96,18 @@ class App extends Component {
       year: this.year.value,
       price: this.price.value,
     }
+
+    axios
+    .post(`${baseUrl}/vehicles`, newCar)
+    .then((res) => {
+      this.setState({
+        vehiclesToDisplay: res.data.vehicles
+      })
+      toast.success('Car added')
+    })
+    .catch((err)=> {
+      toast.error(err.message)
+    })
 
     // axios (POST)
     // setState with response -> vehiclesToDisplay
